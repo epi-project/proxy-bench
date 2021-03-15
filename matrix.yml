@@ -1,0 +1,84 @@
+# Network subnet is fixed: 172.0.10.0/24
+
+defaults:
+  resources:
+    X:
+      cpu: "1.0"
+      ram: "2048MB"
+    Y:
+      cpu: "1.0"
+      ram: "2048MB"
+    Z:
+      cpu: "1.0"
+      ram: "2048MB"
+
+  network:
+    X:
+      ip: "172.0.10.24"
+      delay: "1.0ms"
+    Y: 
+      ip: "172.0.10.25"
+      delay: "1.0ms"
+    Z: 
+      ip: "172.0.10.26"
+      delay: "1.0ms"
+
+  containers:
+    Z:
+      image: nginx:1.19
+
+setups:
+  - noproxy-httping:
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "11"
+            - "1s"
+            - "172.0.10.26"
+
+  - nginx-httping:
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "11"
+            - "1s"
+            - "172.0.10.25"
+        Y:
+          image: proxy_bench/nginx
+
+  - socks5-httping:
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "11"
+            - "1s"
+            - "172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: onnovalkering/socksx-proxy
+          command:
+            - "--socks"
+            - "5"
+
+  - socks6-httping:
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "11"
+            - "1s"
+            - "172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "6"
+        Y:
+          image: onnovalkering/socksx-proxy
+          command:
+            - "--socks"
+            - "6" 
+

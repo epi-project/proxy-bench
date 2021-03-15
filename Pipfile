@@ -9,6 +9,9 @@ verify_ssl = true
 docker = "*"
 loguru = "*"
 pyyaml = "*"
+pandas = "*"
+numpy = "*"
+openpyxl = "*"
 
 [requires]
 python_version = "3.8"
