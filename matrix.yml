@@ -15,13 +15,13 @@ defaults:
   network:
     X:
       ip: "172.0.10.24"
-      delay: "1.0ms"
+      delay: "0.4ms"
     Y: 
       ip: "172.0.10.25"
-      delay: "1.0ms"
+      delay: "0.4ms"
     Z: 
       ip: "172.0.10.26"
-      delay: "1.0ms"
+      delay: "0.4ms"
 
   containers:
     Z:
@@ -80,5 +80,4 @@ setups:
           image: onnovalkering/socksx-proxy
           command:
             - "--socks"
-            - "6" 
-
+            - "6"
