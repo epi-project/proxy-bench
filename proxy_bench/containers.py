@@ -42,9 +42,6 @@ def create_container(name, config, net: Network, dc: DockerClient) -> Container:
     """
 
     """
-    if name not in config['containers']:
-        return None
-
     image = config['containers'][name]["image"]
     command = config['containers'][name].get("command", [])
     cpu = float(config['resources'][name]['cpu'])
@@ -54,6 +51,7 @@ def create_container(name, config, net: Network, dc: DockerClient) -> Container:
   
     container = dc.containers.create(
         image=image,
+        auto_remove=True,
         command=command,
         privileged=True,
         nano_cpus=int(cpu * 1000000000),
@@ -73,7 +71,7 @@ def create_container(name, config, net: Network, dc: DockerClient) -> Container:
 
     container.start()
 
-    logger.info(f"Created '{name}' container (CPU: {cpu}, RAM: {ram}, packet delay: {delay}).")
+    logger.info(f"Created '{name}' container (CPU: {cpu}, RAM: {ram}, outgoing packet delay: {delay}).")
 
     return container
 

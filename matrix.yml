@@ -15,13 +15,13 @@ defaults:
   network:
     X:
       ip: "172.0.10.24"
-      delay: "0.4ms"
+      delay: "0.0ms"
     Y: 
       ip: "172.0.10.25"
-      delay: "0.4ms"
+      delay: "0.0ms"
     Z: 
       ip: "172.0.10.26"
-      delay: "0.4ms"
+      delay: "0.0ms"
 
   containers:
     Z:
@@ -29,6 +29,11 @@ defaults:
 
 setups:
   - noproxy-httping:
+      network:
+        X:
+          delay: ["0.4ms", "0.9ms", "2.4ms", "4.9ms", "7.4ms", "9.9ms"]
+        Z:
+          delay: ["0.4ms", "0.9ms", "2.4ms", "4.9ms", "7.4ms", "9.9ms"]
       containers:
         X:
           image: onnovalkering/socksx-httping
@@ -37,47 +42,47 @@ setups:
             - "1s"
             - "172.0.10.26"
 
-  - nginx-httping:
-      containers:
-        X:
-          image: onnovalkering/socksx-httping
-          command: 
-            - "11"
-            - "1s"
-            - "172.0.10.25"
-        Y:
-          image: proxy_bench/nginx
+  # - nginx-httping:
+  #     containers:
+  #       X:
+  #         image: onnovalkering/socksx-httping
+  #         command: 
+  #           - "11"
+  #           - "1s"
+  #           - "172.0.10.25"
+  #       Y:
+  #         image: proxy_bench/nginx
 
-  - socks5-httping:
-      containers:
-        X:
-          image: onnovalkering/socksx-httping
-          command: 
-            - "11"
-            - "1s"
-            - "172.0.10.26"
-            - "172.0.10.25"
-            - "1080"
-            - "5"
-        Y:
-          image: onnovalkering/socksx-proxy
-          command:
-            - "--socks"
-            - "5"
+  # - socks5-httping:
+  #     containers:
+  #       X:
+  #         image: onnovalkering/socksx-httping
+  #         command: 
+  #           - "11"
+  #           - "1s"
+  #           - "172.0.10.26"
+  #           - "172.0.10.25"
+  #           - "1080"
+  #           - "5"
+  #       Y:
+  #         image: onnovalkering/socksx-proxy
+  #         command:
+  #           - "--socks"
+  #           - "5"
 
-  - socks6-httping:
-      containers:
-        X:
-          image: onnovalkering/socksx-httping
-          command: 
-            - "11"
-            - "1s"
-            - "172.0.10.26"
-            - "172.0.10.25"
-            - "1080"
-            - "6"
-        Y:
-          image: onnovalkering/socksx-proxy
-          command:
-            - "--socks"
-            - "6"
+  # - socks6-httping:
+  #     containers:
+  #       X:
+  #         image: onnovalkering/socksx-httping
+  #         command: 
+  #           - "11"
+  #           - "1s"
+  #           - "172.0.10.26"
+  #           - "172.0.10.25"
+  #           - "1080"
+  #           - "6"
+  #       Y:
+  #         image: onnovalkering/socksx-proxy
+  #         command:
+  #           - "--socks"
+  #           - "6"
