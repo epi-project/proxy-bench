@@ -27,62 +27,85 @@ defaults:
     Z:
       image: nginx:1.19
 
+# Triangle: 1/1/1, 5/5/5, 10/10/10, 20/20/20
+#     Line: 1/1/2, 5/5/10, 10/10/20, 5/10/15, 10/5/15
 setups:
   - noproxy-httping:
       network:
         X:
-          delay: ["0.4ms", "0.9ms", "2.4ms", "4.9ms", "7.4ms", "9.9ms"]
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
         Z:
-          delay: ["0.4ms", "0.9ms", "2.4ms", "4.9ms", "7.4ms", "9.9ms"]
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
           image: onnovalkering/socksx-httping
           command: 
-            - "11"
+            - "121"
             - "1s"
             - "172.0.10.26"
 
-  # - nginx-httping:
-  #     containers:
-  #       X:
-  #         image: onnovalkering/socksx-httping
-  #         command: 
-  #           - "11"
-  #           - "1s"
-  #           - "172.0.10.25"
-  #       Y:
-  #         image: proxy_bench/nginx
+  - nginx-httping:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "121"
+            - "1s"
+            - "172.0.10.25"
+        Y:
+          image: proxy_bench/nginx
 
-  # - socks5-httping:
-  #     containers:
-  #       X:
-  #         image: onnovalkering/socksx-httping
-  #         command: 
-  #           - "11"
-  #           - "1s"
-  #           - "172.0.10.26"
-  #           - "172.0.10.25"
-  #           - "1080"
-  #           - "5"
-  #       Y:
-  #         image: onnovalkering/socksx-proxy
-  #         command:
-  #           - "--socks"
-  #           - "5"
+  - socks5-httping:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]    
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "121"
+            - "1s"
+            - "172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: onnovalkering/socksx-proxy
+          command:
+            - "--socks"
+            - "5"
 
-  # - socks6-httping:
-  #     containers:
-  #       X:
-  #         image: onnovalkering/socksx-httping
-  #         command: 
-  #           - "11"
-  #           - "1s"
-  #           - "172.0.10.26"
-  #           - "172.0.10.25"
-  #           - "1080"
-  #           - "6"
-  #       Y:
-  #         image: onnovalkering/socksx-proxy
-  #         command:
-  #           - "--socks"
-  #           - "6"
+  - socks6-httping:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]    
+      containers:
+        X:
+          image: onnovalkering/socksx-httping
+          command: 
+            - "121"
+            - "1s"
+            - "172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "6"
+        Y:
+          image: onnovalkering/socksx-proxy
+          command:
+            - "--socks"
+            - "6"
