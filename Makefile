@@ -5,7 +5,13 @@ build: build-nginx
 build-nginx:
 	docker build -t proxy_bench/nginx ./images/nginx
 
-setup: build
+pull:
+	docker pull nginx:1.19
+	docker pull onnovalkering/socksx-httping
+	docker pull onnovalkering/socksx-proxy
+
+setup: build pull
+	mkdir /tmp/docker-tc
 	pipenv install
 
 run:
@@ -25,7 +31,7 @@ ping-delayed:
 		--network host \
 		--cap-add NET_ADMIN	\
 		-v /var/run/docker.sock:/var/run/docker.sock \
-		-v /var/docker-tc:/var/docker-tc \
+		-v /tmp/docker-tc:/var/docker-tc \
 		lukaszlach/docker-tc
 	
 	docker run --rm -dt --name nginx \
