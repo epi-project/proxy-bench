@@ -1,18 +1,26 @@
 all: setup run
 
-build: build-nginx
-
-build-nginx:
-	docker build -t proxy_bench/nginx ./images/nginx
-
-pull:
-	docker pull nginx:1.19
-	docker pull onnovalkering/socksx-httping
-	docker pull onnovalkering/socksx-proxy
-
-setup: build pull
+setup: pull build
 	mkdir /tmp/docker-tc
 	pipenv install
+
+build: build-nginx-proxy build-socks-proxy build-httping-client
+
+build-nginx-proxy:
+	docker build -t proxy_bench/nginx-proxy ./images/nginx
+
+build-socks-proxy:
+	docker build -t proxy_bench/socks-proxy ./images/socks -f ./images/socks/Dockerfile.proxy
+
+build-httping-client:
+	docker build -t proxy_bench/httping-client ./images/socks -f ./images/socks/Dockerfile.httping
+
+build-wrk-client:
+	docker build -t proxy_bench/wrk-client ./images/socks -f ./images/socks/Dockerfile.wrk
+
+pull:
+	git submodule update --init 
+	docker pull nginx:1.19
 
 run:
 	pipenv run python -m proxy_bench

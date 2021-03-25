@@ -1,0 +1,32 @@
+FROM rust:1.50 as build
+
+RUN USER=root cargo new socksx
+WORKDIR /socksx
+
+# Copy over project manifests
+COPY ./socksx/Cargo.toml ./Cargo.toml
+
+# This will prepare dependencies
+RUN cargo build --release
+RUN rm src/*.rs
+
+# Copy over project source code
+COPY ./socksx/examples ./examples
+COPY ./socksx/src ./src
+
+# This will build a release binary
+RUN cargo build --release --example redirector
+
+# Define final image
+FROM ubuntu:20.10
+
+RUN apt-get update && apt-get install -y \
+    iptables \
+    wrk \
+ && rm -rf /var/lib/apt/lists/*
+
+# Copy the release binary from the build stage
+COPY --from=build /socksx/target/release/examples/redirector .
+COPY ./entrypoint-wrk.sh ./entrypoint.sh
+
+ENTRYPOINT [ "./entrypoint.sh" ]

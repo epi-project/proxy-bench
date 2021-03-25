@@ -1,0 +1,3 @@
+[submodule "images/socks/socksx"]
+	path = images/socks/socksx
+	url = https://github.com/onnovalkering/socksx
