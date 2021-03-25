@@ -6,12 +6,9 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-docker = "*"
-loguru = "*"
-pyyaml = "*"
-pandas = "*"
-numpy = "*"
-openpyxl = "*"
-
-[requires]
-python_version = "3.8"
+docker = "4.4"
+loguru = "0.5"
+pyyaml = "5.4"
+pandas = "1.2"
+numpy = "1.20"
+openpyxl = "3.0"
