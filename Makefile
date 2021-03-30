@@ -1,4 +1,4 @@
-all: setup run
+all: setup run-httping
 
 setup: pull build
 	mkdir /tmp/docker-tc
@@ -22,8 +22,8 @@ pull:
 	git submodule update --init 
 	docker pull nginx:1.19
 
-run:
-	pipenv run python -m proxy_bench
+run-httping:
+	pipenv run python -m proxy_bench matrices/httping.yml
 
 ping:
 	docker network create ping --subnet 172.23.0.0/24 --gateway 172.23.0.1

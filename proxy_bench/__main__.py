@@ -5,19 +5,10 @@ from docker import DockerClient
 from loguru import logger
 from pandas import DataFrame, ExcelWriter
 from yaml import load, Loader
+from click import command, argument, File
 
 
 RUNS_PER_SETUP=5
-
-
-def load_bench_matrix():
-    """
-    
-    """
-    with open("matrix.yml") as f:
-        matrix = load(f, Loader=Loader)
-
-    return matrix
 
 
 def expand_setup(setup, name):
@@ -51,12 +42,14 @@ def expand_setup(setup, name):
     return setups
         
 
-if __name__ == '__main__':
+@command()
+@argument("file", type=File('rb'))
+def main(file: File):
     utils.configure_loguru()
     dc = DockerClient.from_env()
 
     # Load benchmark matrix
-    matrix = load_bench_matrix()
+    matrix = load(file, Loader=Loader)
     defaults = matrix['defaults']
 
     # Setup the Docker network.
@@ -135,3 +128,7 @@ if __name__ == '__main__':
     # Cleanup
     net.remove()
     tc.kill()
+
+
+if __name__ == '__main__':
+    main()
