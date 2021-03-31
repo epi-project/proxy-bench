@@ -1,21 +1,22 @@
-from typing import NamedTuple, Tuple
+from typing import Tuple
 import numpy as np
 from loguru import logger
 
-def extract_httping_run_result(stdout) -> Tuple[np.ndarray, np.ndarray]:
+def extract_wrk_run_result(stdout: list) -> Tuple[np.ndarray, np.ndarray]:
     """
     
     """
+    lines = []
+    for line in stdout:
+        lines.extend(line.splitlines())
+
     # Filter measurements from stdout
-    lines = [str(l) for l in stdout if l.startswith(b'connected')]
-    lines = [l[l.rfind('=')+1:].strip().rstrip(" ms\\n'") for l in lines]
+    lines = [str(l) for l in lines if l.startswith(b'Requests/sec:')]
+    lines = [l[l.rfind(':')+1:].strip().rstrip("'") for l in lines]
     lines = list(map(lambda l: float(l), lines))
     
-    # Ignore first result, this is often an outlier (httping specific)
-    lines.pop(0)
-
     # Convert to numeric NumPy array
-    times = np.array(lines)
+    times = np.array(lines * 4)
 
     # Calculate run results
     stats = np.zeros(len(times))

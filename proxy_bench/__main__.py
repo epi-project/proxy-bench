@@ -1,14 +1,11 @@
 import numpy as np
-from . import containers, httping, utils
+from . import containers, httping, utils, wrk
 from copy import deepcopy
 from docker import DockerClient
 from loguru import logger
 from pandas import DataFrame, ExcelWriter
 from yaml import load, Loader
 from click import command, argument, File
-
-
-RUNS_PER_SETUP=5
 
 
 def expand_setup(setup, name):
@@ -50,6 +47,9 @@ def main(file: File):
 
     # Load benchmark matrix
     matrix = load(file, Loader=Loader)
+    client = matrix['client']
+    output = matrix['output']
+    runs_per_setup = matrix['runs-per-setup']
     defaults = matrix['defaults']
 
     # Setup the Docker network.
@@ -69,43 +69,51 @@ def main(file: File):
         for setup in setups:
             variant_times = DataFrame()
             variant_name = utils.add_delay_postfix(setup_name, setup)
-            runs = range(1, RUNS_PER_SETUP+1)
+            runs = range(1, runs_per_setup+1)
 
             for r in runs:
-                logger.info(f"===== {variant_name} ({r}/{RUNS_PER_SETUP}) =====")
-                y, z = (None, None)
+                try:
+                    logger.info(f"===== {variant_name} ({r}/{runs_per_setup}) =====")
+                    y, z = (None, None)
 
-                if 'Y' in setup['containers']:
-                    y = containers.create_container('Y', setup, net, dc)
+                    if 'Y' in setup['containers']:
+                        y = containers.create_container('Y', setup, net, dc)
 
-                if 'Z' in setup['containers']:
-                    z = containers.create_container('Z', setup, net, dc)
+                    if 'Z' in setup['containers']:
+                        z = containers.create_container('Z', setup, net, dc)
 
-                # An X node is mandatory.
-                x = containers.create_container('X', setup, net, dc)
+                    # An X node is mandatory.
+                    x = containers.create_container('X', setup, net, dc)
+                    
+                    # Capture stdout until X completes.
+                    logger.info(f"Waiting for container '{x.name}' (X) to finish.")
+                    stdout = []
+                    for line in x.attach(stream=True):
+                        stdout.append(line)
+
+                    # Process results
+                    logger.info(f"Container '{x.name}' (X) finished. Processing results.")
+                    
+                    if client == "httping":
+                        (times, stats) = httping.extract_httping_run_result(stdout)
+                    elif client == "wrk":
+                        (times, stats) = wrk.extract_wrk_run_result(stdout)
+                    
+                    variant_times[f'run{r}'] = times
+                    variant_times[f'run{r}-stats'] = stats
                 
-                # Capture stdout until X completes.
-                logger.info(f"Waiting for container '{x.name}' (X) to finish.")
-                stdout = []
-                for line in x.attach(stream=True):
-                    stdout.append(line)
+                # Always perform cleanup
+                finally:
+                    if y is not None:
+                        y.kill()
 
-                # Process results
-                logger.info(f"Container '{x.name}' (X) finished. Processing results.")
-                (times, stats) = httping.extract_httping_run_result(stdout)
-                variant_times[f'run{r}'] = times
-                variant_times[f'run{r}-stats'] = stats
-
-                if y is not None:
-                    y.kill()
-
-                if z is not None:
-                    z.kill()
+                    if z is not None:
+                        z.kill()
 
             # Calculate variant-wide stats
-            variant_stats = np.zeros(len(variant_times['run1']))
+            variant_stats = np.zeros(min(len(variant_times['run1']), 4))
             combined = np.array([])
-            means = np.zeros(RUNS_PER_SETUP)
+            means = np.zeros(runs_per_setup)
             for (i, r) in enumerate(runs):
                 means[i] = variant_times[f'run{r}-stats'][1]
                 combined = np.append(combined, variant_times[f'run{r}'])
@@ -121,7 +129,7 @@ def main(file: File):
 
     # Write output to file
     logger.info("Writing output")
-    with ExcelWriter("results.xlsx") as w:
+    with ExcelWriter(output) as w:
         for (name, df) in xlsx_sheets.items():
             df.to_excel(w, sheet_name=name)
 

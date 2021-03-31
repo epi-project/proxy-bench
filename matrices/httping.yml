@@ -1,4 +1,7 @@
 # Network subnet is fixed: 172.0.10.0/24
+client: "httping"
+output: "httping-results.xlsx"
+runs-per-setup: 5
 
 defaults:
   resources:
@@ -38,7 +41,7 @@ setups:
           delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
-          image: onnovalkering/socksx-httping
+          image: proxy_bench/httping-client
           command: 
             - "121"
             - "1s"
@@ -54,7 +57,7 @@ setups:
           delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
       containers:
         X:
-          image: onnovalkering/socksx-httping
+          image: proxy_bench/httping-client
           command: 
             - "121"
             - "1s"
@@ -72,7 +75,7 @@ setups:
           delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]    
       containers:
         X:
-          image: onnovalkering/socksx-httping
+          image: proxy_bench/httping-client
           command: 
             - "121"
             - "1s"
@@ -81,7 +84,7 @@ setups:
             - "1080"
             - "5"
         Y:
-          image: onnovalkering/socksx-proxy
+          image: proxy_bench/socks-proxy
           command:
             - "--socks"
             - "5"
@@ -96,7 +99,7 @@ setups:
           delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]    
       containers:
         X:
-          image: onnovalkering/socksx-httping
+          image: proxy_bench/httping-client
           command: 
             - "121"
             - "1s"
@@ -105,7 +108,7 @@ setups:
             - "1080"
             - "6"
         Y:
-          image: onnovalkering/socksx-proxy
+          image: proxy_bench/socks-proxy
           command:
             - "--socks"
             - "6"

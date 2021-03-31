@@ -1,10 +1,10 @@
-all: setup run-httping
+all: setup run-httping run-wrk
 
 setup: pull build
 	mkdir /tmp/docker-tc
 	pipenv install
 
-build: build-nginx-proxy build-socks-proxy build-httping-client
+build: build-nginx-proxy build-socks-proxy build-httping-client build-wrk-client
 
 build-nginx-proxy:
 	docker build -t proxy_bench/nginx-proxy ./images/nginx
@@ -24,6 +24,20 @@ pull:
 
 run-httping:
 	pipenv run python -m proxy_bench matrices/httping.yml
+
+run-wrk: run-wrk-noproxy run-wrk-nginx run-wrk-socks5 run-wrk-socks6
+
+run-wrk-noproxy:
+	pipenv run python -m proxy_bench matrices/wrk-noproxy.yml
+
+run-wrk-nginx:
+	pipenv run python -m proxy_bench matrices/wrk-nginx.yml
+
+run-wrk-socks5:
+	pipenv run python -m proxy_bench matrices/wrk-socks5.yml
+
+run-wrk-socks6:
+	pipenv run python -m proxy_bench matrices/wrk-socks6.yml			
 
 ping:
 	docker network create ping --subnet 172.23.0.0/24 --gateway 172.23.0.1

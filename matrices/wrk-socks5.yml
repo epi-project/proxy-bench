@@ -1,0 +1,159 @@
+# Network subnet is fixed: 172.0.10.0/24
+client: "wrk"
+output: "wrk-socks5-results.xlsx"
+runs-per-setup: 5
+
+defaults:
+  resources:
+    X:
+      cpu: "1.0"
+      ram: "2048MB"
+    Y:
+      cpu: "1.0"
+      ram: "2048MB"
+    Z:
+      cpu: "1.0"
+      ram: "2048MB"
+
+  network:
+    X:
+      ip: "172.0.10.24"
+      delay: "0.0ms"
+    Y: 
+      ip: "172.0.10.25"
+      delay: "0.0ms"
+    Z: 
+      ip: "172.0.10.26"
+      delay: "0.0ms"
+
+  containers:
+    Z:
+      image: nginx:1.19
+
+# Triangle: 1/1/1, 5/5/5, 10/10/10, 20/20/20
+#     Line: 1/1/2, 5/5/10, 10/10/20, 5/10/15, 10/5/15
+setups:
+  - socks5-wrk-1-1:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
+      containers:
+        X:
+          image: proxy_bench/wrk-client
+          command: 
+            - "1"
+            - "1m"
+            - "1"
+            - "http://172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: proxy_bench/socks-proxy
+          command:
+            - "--socks"
+            - "5"
+
+  - socks5-wrk-2-2:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
+      containers:
+        X:
+          image: proxy_bench/wrk-client
+          command: 
+            - "2"
+            - "1m"
+            - "2"
+            - "http://172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: proxy_bench/socks-proxy
+          command:
+            - "--socks"
+            - "5"
+
+  - socks5-wrk-4-2:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
+      containers:
+        X:
+          image: proxy_bench/wrk-client
+          command: 
+            - "4"
+            - "1m"
+            - "2"
+            - "http://172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: proxy_bench/socks-proxy
+          command:
+            - "--socks"
+            - "5"
+
+  - socks5-wrk-8-2:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
+      containers:
+        X:
+          image: proxy_bench/wrk-client
+          command: 
+            - "8"
+            - "1m"
+            - "2"
+            - "http://172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: proxy_bench/socks-proxy
+          command:
+            - "--socks"
+            - "5"
+
+  - socks5-wrk-16-2:
+      network:   
+        X:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "7.4ms"]
+        Y:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "2.4ms", "2.4ms"]
+        Z:
+          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "7.4ms", "2.4ms"]  
+      containers:
+        X:
+          image: proxy_bench/wrk-client
+          command: 
+            - "16"
+            - "1m"
+            - "2"
+            - "http://172.0.10.26"
+            - "172.0.10.25"
+            - "1080"
+            - "5"
+        Y:
+          image: proxy_bench/socks-proxy
+          command:
+            - "--socks"
+            - "5"
