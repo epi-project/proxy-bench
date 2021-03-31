@@ -15,16 +15,11 @@ To start the default benchmarks, simply run the following command in the root di
 $ make
 ```
 
-The benchmark results will be stored in a file call `results.xlsx`, also in the root directory.
+The benchmark results will be stored in `*-results.xlsx` files, also in the root directory.
 
 ### Applications
 The client applications that are supported are:
 
 - [httping](https://github.com/flok99/httping)
 - [wrk](https://github.com/wg/wrk)
-- [iperf3](https://github.com/esnet/iperf)
 
-### Configuration
-It's possible to make custom benchmark configurations.
-
-...
