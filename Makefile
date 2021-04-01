@@ -1,7 +1,7 @@
 all: setup run-httping run-wrk
 
 setup: pull build
-	mkdir /tmp/docker-tc
+	mkdir -p /tmp/docker-tc
 	pipenv install
 
 build: build-nginx-proxy build-socks-proxy build-httping-client build-wrk-client
