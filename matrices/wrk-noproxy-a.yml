@@ -1,6 +1,6 @@
 # Network subnet is fixed: 172.0.10.0/24
 client: "wrk"
-output: "wrk-nginx-results.xlsx"
+output: "wrk-noproxy-results-a.xlsx"
 runs-per-setup: 5
 
 defaults:
@@ -14,25 +14,25 @@ defaults:
     Z:
       cpu: "1.0"
       ram: "2048MB"
-  
+
   # Line: 1/1/2
   network:
     X:
       ip: "172.0.10.24"
-      delay: "0.4ms"
+      delay: "0.9ms"
     Y: 
       ip: "172.0.10.25"
-      delay: "0.4ms"
+      delay: "0.0ms"
     Z: 
       ip: "172.0.10.26"
-      delay: "0.4ms"
+      delay: "0.9ms"
 
   containers:
     Z:
       image: nginx:1.19
 
 setups:
-  - nginx-wrk-1-1:
+  - noproxy-wrk-1-1:
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -40,11 +40,9 @@ setups:
             - "1"
             - "1m"
             - "1"
-            - "http://172.0.10.25"
-        Y:
-          image: proxy_bench/nginx-proxy
+            - "http://172.0.10.26"
 
-  - nginx-wrk-2-2: 
+  - noproxy-wrk-2-2:
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -52,11 +50,9 @@ setups:
             - "2"
             - "1m"
             - "2"
-            - "http://172.0.10.25"
-        Y:
-          image: proxy_bench/nginx-proxy
+            - "http://172.0.10.26"
 
-  - nginx-wrk-4-2:
+  - noproxy-wrk-4-2:
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -64,11 +60,9 @@ setups:
             - "4"
             - "1m"
             - "2"
-            - "http://172.0.10.25"
-        Y:
-          image: proxy_bench/nginx-proxy
+            - "http://172.0.10.26"
 
-  - nginx-wrk-8-2:
+  - noproxy-wrk-8-2:
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -76,11 +70,9 @@ setups:
             - "8"
             - "1m"
             - "2"
-            - "http://172.0.10.25"
-        Y:
-          image: proxy_bench/nginx-proxy
+            - "http://172.0.10.26"         
 
-  - nginx-wrk-16-2:
+  - noproxy-wrk-16-2:
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -88,6 +80,4 @@ setups:
             - "16"
             - "1m"
             - "2"
-            - "http://172.0.10.25"
-        Y:
-          image: proxy_bench/nginx-proxy
+            - "http://172.0.10.26"

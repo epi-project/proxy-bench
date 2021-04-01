@@ -25,10 +25,13 @@ pull:
 run-httping:
 	pipenv run python -m proxy_bench matrices/httping.yml
 
-run-wrk: run-wrk-noproxy run-wrk-nginx run-wrk-socks5 run-wrk-socks6
+run-wrk: run-wrk-noproxy-a run-wrk-noproxy-b run-wrk-nginx run-wrk-socks5 run-wrk-socks6
 
-run-wrk-noproxy:
-	pipenv run python -m proxy_bench matrices/wrk-noproxy.yml
+run-wrk-noproxy-a:
+	pipenv run python -m proxy_bench matrices/wrk-noproxy-a.yml
+
+run-wrk-noproxy-b:
+	pipenv run python -m proxy_bench matrices/wrk-noproxy-b.yml
 
 run-wrk-nginx:
 	pipenv run python -m proxy_bench matrices/wrk-nginx.yml

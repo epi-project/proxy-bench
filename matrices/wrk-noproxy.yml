@@ -15,17 +15,17 @@ defaults:
       cpu: "1.0"
       ram: "2048MB"
 
-  # Triangle: 1/1/1
+  # Line: 1/1/2
   network:
     X:
       ip: "172.0.10.24"
-      delay: "0.4ms"
+      delay: "0.9ms"
     Y: 
       ip: "172.0.10.25"
-      delay: "0.4ms"
+      delay: "0.0ms"
     Z: 
       ip: "172.0.10.26"
-      delay: "0.4 ms"
+      delay: "0.9ms"
 
   containers:
     Z:
@@ -33,11 +33,6 @@ defaults:
 
 setups:
   - noproxy-wrk-1-1:
-      network:
-        X:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
-        Z:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -48,11 +43,6 @@ setups:
             - "http://172.0.10.26"
 
   - noproxy-wrk-2-2:
-      network:
-        X:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
-        Z:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -63,11 +53,6 @@ setups:
             - "http://172.0.10.26"
 
   - noproxy-wrk-4-2:
-      network:
-        X:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
-        Z:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -78,11 +63,6 @@ setups:
             - "http://172.0.10.26"
 
   - noproxy-wrk-8-2:
-      network:
-        X:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
-        Z:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
           image: proxy_bench/wrk-client
@@ -93,17 +73,11 @@ setups:
             - "http://172.0.10.26"         
 
   - noproxy-wrk-16-2:
-      network:
-        X:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
-        Z:
-          delay: ["0.4ms", "2.4ms", "4.9ms", "9.9ms", "0.9ms", "7.4ms"]
       containers:
         X:
           image: proxy_bench/wrk-client
           command: 
-            - "8"
+            - "16"
             - "1m"
             - "2"
             - "http://172.0.10.26"
-

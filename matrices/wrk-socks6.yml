@@ -15,7 +15,7 @@ defaults:
       cpu: "1.0"
       ram: "2048MB"
 
-  # Triangle: 1/1/1
+  # Line: 1/1/2
   network:
     X:
       ip: "172.0.10.24"
@@ -25,7 +25,7 @@ defaults:
       delay: "0.4ms"
     Z: 
       ip: "172.0.10.26"
-      delay: "0.4 ms"
+      delay: "0.4ms"
 
   containers:
     Z:
@@ -43,7 +43,7 @@ setups:
             - "http://172.0.10.26"
             - "172.0.10.25"
             - "1080"
-            - "5"
+            - "6"
         Y:
           image: proxy_bench/socks-proxy
           command:
